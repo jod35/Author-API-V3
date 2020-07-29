@@ -29,6 +29,8 @@ This is a third version of the AuthorApi I created. It has some added functional
 ` pip3 install -r requirements.txt `
 
 3. To run the API,
+- Make sure your MongoDB is installed.
+
 - Start your MongoDB server ` sudo mongod `
 
 - Enter the command in your termainal ` export FLASK_APP=wsgi.py`
