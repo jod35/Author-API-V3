@@ -54,7 +54,7 @@ def create_new_author():
 
 ####################################
 ######Get an Author with an id######
-####################################
+###################################     #
 
 @app.route('/author/<id>',methods=['GET'])
 def get_author_by_id(id):
@@ -72,6 +72,56 @@ def get_author_by_id(id):
         }
     ))
 
+###################################
+####Update an author with an id####
+###################################
+@app.route('/author/<id>',methods=['PUT'])
+def update_author(id):
+    author_to_update=Author.objects.get(id=ObjectId(id))
+    data=request.get_json()
+
+    if data['name']:
+        author_to_update.name=data['name']
+
+    if data['specializtion']:
+        author_to_update.specialization=data['specialization']
+
+    
+    author_to_update.save()
+    author_to_update.reload()
+
+    author_schema=AuthorSchema(only=['name','specializtion'])
+
+    author=author_schema.dump(author_to_update)
+
+    return make_response(
+        jsonify({
+            "message":"Author Updated successfully",
+            "author":author
+        })
+    )
+
+##############################################
+#########Delete An Author with an ID##########
+##############################################
+@app.route('/author/<id>',methods=['DELETE'])
+def delete_author(id):
+    author_to_delete=Author.objects.get(id=ObjectId(id))
+
+    author_to_delete.delete()
+    
+
+
+    return make_response(
+        jsonify({
+            "message":"Author deleted successfully"
+        })
+    )
+
+
+###################################
+########Custom Error Handling######
+###################################
 @app.errorhandler(404)
 def not_found(error):
     return make_response(
@@ -79,6 +129,8 @@ def not_found(error):
             "message":"Not Found"
         })
     )
+
+
 
 @app.errorhandler(500)
 def internal_server_error(error):
@@ -90,10 +142,13 @@ def internal_server_error(error):
         )
     )
 
+#############################
+###########Shell context#####
+#############################
 @app.shell_context_processor
 def make_shell_context():
     return {
         "db":db,
         "Author":Author,
-        "app",app
+        "app":app
     }
