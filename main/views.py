@@ -110,8 +110,6 @@ def delete_author(id):
 
     author_to_delete.delete()
     
-
-
     return make_response(
         jsonify({
             "message":"Author deleted successfully"
